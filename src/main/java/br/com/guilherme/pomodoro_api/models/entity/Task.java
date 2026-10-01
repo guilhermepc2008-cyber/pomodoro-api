@@ -4,12 +4,12 @@ public class Task {
 
     private Long id;
     private String title;
-    private boolean completed;
+    private Boolean completed;
 
     public Task() {
     }
 
-    public Task(Long id, String title, boolean completed) {
+    public Task(Long id, String title, Boolean completed) {
         this.id = id;
         this.title = title;
         this.completed = completed;
@@ -37,5 +37,14 @@ public class Task {
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
+    }
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", completed=" + completed +
+                '}';
     }
 }
