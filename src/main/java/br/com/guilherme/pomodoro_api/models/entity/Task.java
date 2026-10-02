@@ -1,5 +1,8 @@
 package br.com.guilherme.pomodoro_api.models.entity;
 
+import jakarta.persistence.Entity;
+
+
 public class Task {
 
     private Long id;

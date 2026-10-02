@@ -2,9 +2,7 @@ package br.com.guilherme.pomodoro_api.Controller;
 
 import br.com.guilherme.pomodoro_api.models.entity.Task;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +19,22 @@ public class TaskController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Task>> mostrarTasks(){
-        return ResponseEntity.ok(tasks);
+    public ResponseEntity<List<Task>> mostrarTasks(@RequestParam(required = false) Boolean completed){
+        if (completed == null) {
+            return ResponseEntity.ok(tasks);
+        }
+         return ResponseEntity.ok(tasks.stream().filter(t -> t.isCompleted() ==  completed).toList());
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Task> mostrarTaskId(@PathVariable Long id){
+        return ResponseEntity.ok(tasks.stream()
+                .filter(t -> t.getId().equals(id))
+                .findFirst()
+                .orElse(null));
+    }
+
+
+
+
 }
