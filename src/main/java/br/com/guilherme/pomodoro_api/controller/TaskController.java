@@ -36,6 +36,13 @@ public class TaskController {
                 .findFirst());
     }
 
+    @PostMapping
+    public ResponseEntity<Task> createTask(@RequestBody Task task){
+        task.setId(idGenerator.getAndIncrement());
+        tasks.add(task);
+        return ResponseEntity.status(HttpStatus.CREATED).body(task);
+    }
+
 
 
 
