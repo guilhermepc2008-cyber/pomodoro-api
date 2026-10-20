@@ -28,10 +28,11 @@ public class TaskController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Task> mostrarTaskId(@PathVariable Long id){
-        return ResponseEntity.ok(tasks.stream()
+        return  tasks.stream()
                 .filter(t -> t.getId().equals(id))
                 .findFirst()
-                .orElse(null));
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
 
