@@ -1,21 +1,24 @@
-package br.com.guilherme.pomodoro_api.Controller;
+package br.com.guilherme.pomodoro_api.controller;
 
-import br.com.guilherme.pomodoro_api.models.entity.Task;
+import br.com.guilherme.pomodoro_api.entity.Task;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @RestController
 @RequestMapping("/task")
 public class TaskController {
-    private List<Task> tasks = new ArrayList<>();
+    private final AtomicLong idGenerator = new AtomicLong(1);
+    private final List<Task> tasks = new ArrayList<>();
 
     public TaskController() {
-        tasks.add(new Task(1L, "Estudar Spring Boot", false));
-        tasks.add(new Task(2L, "Praticar a API REST", false));
-        tasks.add(new Task(3L, "Revisar o código", true));
+        tasks.add(new Task(idGenerator.getAndIncrement(), "Estudar Spring Boot", false));
+        tasks.add(new Task(idGenerator.getAndIncrement(), "Praticar a API REST", false));
+        tasks.add(new Task(idGenerator.getAndIncrement(), "Revisar o código", true));
     }
 
     @GetMapping()
@@ -31,7 +34,6 @@ public class TaskController {
         return  ResponseEntity.of( tasks.stream()
                 .filter(t -> t.getId().equals(id))
                 .findFirst());
-
     }
 
 

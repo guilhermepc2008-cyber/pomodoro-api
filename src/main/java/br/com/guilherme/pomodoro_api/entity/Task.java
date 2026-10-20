@@ -1,4 +1,4 @@
-package br.com.guilherme.pomodoro_api.models.entity;
+package br.com.guilherme.pomodoro_api.entity;
 
 import jakarta.persistence.Entity;
 
