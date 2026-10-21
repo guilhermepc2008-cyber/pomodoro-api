@@ -16,9 +16,12 @@ public class TaskController {
     private final List<Task> tasks = new ArrayList<>();
 
     public TaskController() {
-        tasks.add(new Task(idGenerator.getAndIncrement(), "Estudar Spring Boot", false));
-        tasks.add(new Task(idGenerator.getAndIncrement(), "Praticar a API REST", false));
-        tasks.add(new Task(idGenerator.getAndIncrement(), "Revisar o código", true));
+        tasks.add(new Task("Estudar Spring Boot", false));
+        tasks.add(new Task("Praticar a API REST", false));
+        tasks.add(new Task("Revisar o código", true));
+        tasks.get(0).setId(idGenerator.getAndIncrement());
+        tasks.get(1).setId(idGenerator.getAndIncrement());
+        tasks.get(2).setId(idGenerator.getAndIncrement());
     }
 
     @GetMapping()
@@ -61,13 +64,13 @@ public class TaskController {
         return ResponseEntity.of(tasks.stream()
                 .filter(t -> t.getId().equals(id))
                 .findFirst()
-                .map(t -> {t.setCompleted(!t.isCompleted());
-                                return t;
+                .map(t -> {
+                    t.setCompleted(!t.isCompleted());
+                    return t;
                 }));
     }
 
-
-@DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
         boolean removed = tasks.removeIf(t -> t.getId().equals(id));
         if (removed) {

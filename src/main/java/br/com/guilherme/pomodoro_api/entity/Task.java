@@ -1,10 +1,17 @@
 package br.com.guilherme.pomodoro_api.entity;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
+@Entity
 
 
 public class Task {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
     private Boolean completed;
@@ -12,8 +19,7 @@ public class Task {
     public Task() {
     }
 
-    public Task(Long id, String title, Boolean completed) {
-        this.id = id;
+    public Task(String title, Boolean completed) {
         this.title = title;
         this.completed = completed;
     }
