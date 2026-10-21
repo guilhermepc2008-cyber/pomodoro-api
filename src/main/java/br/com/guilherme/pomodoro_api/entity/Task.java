@@ -6,8 +6,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 @Entity
-
-
 public class Task {
 
     @Id

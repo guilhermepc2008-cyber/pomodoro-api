@@ -30,11 +30,15 @@ private final AtomicLong idGenerator = new AtomicLong(1);
     }
 
     @GetMapping()
-    public ResponseEntity<List<Task>> mostrarTasks(@RequestParam(required = false) Boolean completed) {
+    public ResponseEntity<List<TaskDTO>> mostrarTasks(@RequestParam(required = false) Boolean completed) {
+        List<TaskDTO> allTasks = repositoryService.findAllTasks();
         if (completed == null) {
-            return ResponseEntity.ok(tasks);
+            return ResponseEntity.ok(allTasks);
         }
-        return ResponseEntity.ok(tasks.stream().filter(t -> t.isCompleted() == completed).toList());
+        List<TaskDTO> filteredTasks = allTasks.stream()
+                .filter(t -> t.completed() == completed)
+                .toList();
+        return ResponseEntity.ok(filteredTasks);
     }
 
     @GetMapping("/{id}")
@@ -48,8 +52,7 @@ private final AtomicLong idGenerator = new AtomicLong(1);
 
     @PostMapping
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
-        task.setId(idGenerator.getAndIncrement());
-        tasks.add(task);
+        repositoryService.postTask(task);
         return ResponseEntity.status(HttpStatus.CREATED).body(task);
     }
 
