@@ -1,6 +1,9 @@
 package br.com.guilherme.pomodoro_api.controller;
 
+import br.com.guilherme.pomodoro_api.dto.TaskDTO;
 import br.com.guilherme.pomodoro_api.entity.Task;
+import br.com.guilherme.pomodoro_api.service.RepositoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,7 +15,9 @@ import java.util.concurrent.atomic.AtomicLong;
 @RestController
 @RequestMapping("/task")
 public class TaskController {
-    private final AtomicLong idGenerator = new AtomicLong(1);
+    @Autowired
+    private RepositoryService repositoryService;
+private final AtomicLong idGenerator = new AtomicLong(1);
     private final List<Task> tasks = new ArrayList<>();
 
     public TaskController() {
@@ -33,10 +38,12 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> mostrarTaskId(@PathVariable Long id) {
-        return ResponseEntity.of(tasks.stream()
-                .filter(t -> t.getId().equals(id))
-                .findFirst());
+    public ResponseEntity<TaskDTO> mostrarTaskId(@PathVariable Long id) {
+        TaskDTO taskDTO = repositoryService.findTaskById(id);
+        if (taskDTO == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(taskDTO);
     }
 
     @PostMapping
