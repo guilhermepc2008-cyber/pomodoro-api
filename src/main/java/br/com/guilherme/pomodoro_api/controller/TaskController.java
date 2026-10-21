@@ -56,7 +56,7 @@ public class TaskController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PatchMapping("/alterar/{id}")
+    @PatchMapping("/{id}/toggle")
     public ResponseEntity<Task> alterarCompleted(@PathVariable Long id) {
         return ResponseEntity.of(tasks.stream()
                 .filter(t -> t.getId().equals(id))
