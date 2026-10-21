@@ -3,6 +3,7 @@ package br.com.guilherme.pomodoro_api.service;
 import br.com.guilherme.pomodoro_api.dto.TaskDTO;
 import br.com.guilherme.pomodoro_api.entity.Task;
 import br.com.guilherme.pomodoro_api.repository.TaskRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,11 +13,8 @@ import java.util.stream.Collectors;
 @Service
 public class RepositoryService {
 
-    private final TaskRepository taskRepository;
-
-    public RepositoryService(TaskRepository taskRepository) {
-        this.taskRepository = taskRepository;
-    }
+    @Autowired
+    private TaskRepository taskRepository;
 
     public TaskDTO findTaskById(Long id) {
         Optional<Task> optionalTask = taskRepository.findById(id);
@@ -37,7 +35,18 @@ public class RepositoryService {
                 .collect(Collectors.toList());
     }
 
-    public void postTask(Task task){
+    public void postTask(Task task) {
         taskRepository.save(task);
+    }
+
+    public void deletarTask(Long id) {
+        if (existeTask(id)){
+            taskRepository.deleteById(id);
+        }
+    }
+
+    public Boolean existeTask(Long id){
+        Boolean existe = taskRepository.existsById(id);
+        return existe;
     }
 }
