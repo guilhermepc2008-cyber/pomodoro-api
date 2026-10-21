@@ -67,4 +67,12 @@ public class TaskController {
     }
 
 
+@DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+        boolean removed = tasks.removeIf(t -> t.getId().equals(id));
+        if (removed) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
 }
