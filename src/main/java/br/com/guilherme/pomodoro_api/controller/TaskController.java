@@ -22,22 +22,22 @@ public class TaskController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Task>> mostrarTasks(@RequestParam(required = false) Boolean completed){
+    public ResponseEntity<List<Task>> mostrarTasks(@RequestParam(required = false) Boolean completed) {
         if (completed == null) {
             return ResponseEntity.ok(tasks);
         }
-         return ResponseEntity.ok(tasks.stream().filter(t -> t.isCompleted() ==  completed).toList());
+        return ResponseEntity.ok(tasks.stream().filter(t -> t.isCompleted() == completed).toList());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Task> mostrarTaskId(@PathVariable Long id){
-        return  ResponseEntity.of( tasks.stream()
+    public ResponseEntity<Task> mostrarTaskId(@PathVariable Long id) {
+        return ResponseEntity.of(tasks.stream()
                 .filter(t -> t.getId().equals(id))
                 .findFirst());
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Task task){
+    public ResponseEntity<Task> createTask(@RequestBody Task task) {
         task.setId(idGenerator.getAndIncrement());
         tasks.add(task);
         return ResponseEntity.status(HttpStatus.CREATED).body(task);
@@ -48,14 +48,23 @@ public class TaskController {
         return tasks.stream().filter(t -> t.getId().equals(id))
                 .findFirst()
                 .map(t ->
-                {t.setTitle(update.getTitle());
+                {
+                    t.setTitle(update.getTitle());
                     t.setCompleted(update.isCompleted());
                     return ResponseEntity.ok(t);
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
-
+    @PatchMapping("/alterar/{id}")
+    public ResponseEntity<Task> alterarCompleted(@PathVariable Long id) {
+        return ResponseEntity.of(tasks.stream()
+                .filter(t -> t.getId().equals(id))
+                .findFirst()
+                .map(t -> {t.setCompleted(!t.isCompleted());
+                                return t;
+                }));
+    }
 
 
 }
