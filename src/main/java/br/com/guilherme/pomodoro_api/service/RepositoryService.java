@@ -46,6 +46,15 @@ public class RepositoryService {
                 .collect(Collectors.toList());
     }
 
+    public Optional<TaskDTO> updateTask(Long id,Task task){
+        return taskRepository.findById(id).map(t -> {t.setTitle(task.getTitle());
+            t.setCompleted(task.isCompleted());
+            taskRepository.save(t);
+            return new TaskDTO(t.getId(), t.getTitle(), t.isCompleted());
+
+        });
+    }
+
     public void postTask(Task task) {
         taskRepository.save(task);
     }

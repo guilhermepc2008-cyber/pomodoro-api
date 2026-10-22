@@ -43,16 +43,8 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task update) {
-        return tasks.stream().filter(t -> t.getId().equals(id))
-                .findFirst()
-                .map(t ->
-                {
-                    t.setTitle(update.getTitle());
-                    t.setCompleted(update.isCompleted());
-                    return ResponseEntity.ok(t);
-                })
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id, @RequestBody Task update) {
+        return ResponseEntity.of(repositoryService.updateTask(id, update));
     }
 
     @PatchMapping("/{id}/toggle")
