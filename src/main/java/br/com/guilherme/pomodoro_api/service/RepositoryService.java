@@ -51,12 +51,12 @@ public class RepositoryService {
     }
 
     public void deletarTask(Long id) {
-        if (existeTask(id)){
-            taskRepository.deleteById(id);
-        }
+
+        taskRepository.deleteById(id);
+
     }
 
-    public Boolean existeTask(Long id){
+    public Boolean existeTask(Long id) {
         Boolean existe = taskRepository.existsById(id);
         return existe;
     }

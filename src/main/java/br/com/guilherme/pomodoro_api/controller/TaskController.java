@@ -17,17 +17,6 @@ import java.util.concurrent.atomic.AtomicLong;
 public class TaskController {
     @Autowired
     private RepositoryService repositoryService;
-private final AtomicLong idGenerator = new AtomicLong(1);
-    private final List<Task> tasks = new ArrayList<>();
-
-    public TaskController() {
-        tasks.add(new Task("Estudar Spring Boot", false));
-        tasks.add(new Task("Praticar a API REST", false));
-        tasks.add(new Task("Revisar o código", true));
-        tasks.get(0).setId(idGenerator.getAndIncrement());
-        tasks.get(1).setId(idGenerator.getAndIncrement());
-        tasks.get(2).setId(idGenerator.getAndIncrement());
-    }
 
     @GetMapping()
     public ResponseEntity<List<TaskDTO>> mostrarTasks(@RequestParam(required = false) Boolean completed) {
@@ -79,8 +68,8 @@ private final AtomicLong idGenerator = new AtomicLong(1);
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        boolean removed = tasks.removeIf(t -> t.getId().equals(id));
-        if (removed) {
+        if (repositoryService.existeTask(id)) {
+            repositoryService.deletarTask(id);
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.notFound().build();
