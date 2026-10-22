@@ -35,6 +35,17 @@ public class RepositoryService {
                 .collect(Collectors.toList());
     }
 
+    public List<TaskDTO> findTasksByCompleted(Boolean completed) {
+        return taskRepository.findAll().stream()
+                .filter(task -> task.isCompleted() == completed)
+                .map(task -> new TaskDTO(
+                        task.getId(),
+                        task.getTitle(),
+                        task.isCompleted()
+                ))
+                .collect(Collectors.toList());
+    }
+
     public void postTask(Task task) {
         taskRepository.save(task);
     }

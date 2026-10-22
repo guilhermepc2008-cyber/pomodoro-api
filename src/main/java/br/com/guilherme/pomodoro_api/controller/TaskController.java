@@ -35,10 +35,7 @@ private final AtomicLong idGenerator = new AtomicLong(1);
         if (completed == null) {
             return ResponseEntity.ok(allTasks);
         }
-        List<TaskDTO> filteredTasks = allTasks.stream()
-                .filter(t -> t.completed() == completed)
-                .toList();
-        return ResponseEntity.ok(filteredTasks);
+        return ResponseEntity.ok(repositoryService.findTasksByCompleted(completed));
     }
 
     @GetMapping("/{id}")
