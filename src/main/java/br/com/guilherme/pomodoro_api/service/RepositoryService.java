@@ -69,4 +69,12 @@ public class RepositoryService {
         Boolean existe = taskRepository.existsById(id);
         return existe;
     }
+
+    public Optional<TaskDTO> alterarCompleted(Long id){
+        return taskRepository.findById(id).map(t -> {
+            t.setCompleted(!t.isCompleted());
+            taskRepository.save(t);
+            return new TaskDTO(t.getId(), t.getTitle(), t.isCompleted());
+        });
+    }
 }

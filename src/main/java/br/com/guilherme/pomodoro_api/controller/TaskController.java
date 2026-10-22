@@ -48,14 +48,8 @@ public class TaskController {
     }
 
     @PatchMapping("/{id}/toggle")
-    public ResponseEntity<Task> alterarCompleted(@PathVariable Long id) {
-        return ResponseEntity.of(tasks.stream()
-                .filter(t -> t.getId().equals(id))
-                .findFirst()
-                .map(t -> {
-                    t.setCompleted(!t.isCompleted());
-                    return t;
-                }));
+    public ResponseEntity<TaskDTO> patchCompleted(@PathVariable Long id) {
+        return ResponseEntity.of(repositoryService.alterarCompleted(id));
     }
 
     @DeleteMapping("/{id}")
