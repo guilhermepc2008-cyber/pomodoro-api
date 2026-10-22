@@ -46,12 +46,12 @@ public class RepositoryService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<TaskDTO> updateTask(Long id,Task task){
-        return taskRepository.findById(id).map(t -> {t.setTitle(task.getTitle());
+    public Optional<TaskDTO> updateTask(Long id, Task task) {
+        return taskRepository.findById(id).map(t -> {
+            t.setTitle(task.getTitle());
             t.setCompleted(task.isCompleted());
             taskRepository.save(t);
             return new TaskDTO(t.getId(), t.getTitle(), t.isCompleted());
-
         });
     }
 
@@ -60,9 +60,7 @@ public class RepositoryService {
     }
 
     public void deletarTask(Long id) {
-
         taskRepository.deleteById(id);
-
     }
 
     public Boolean existeTask(Long id) {
@@ -70,7 +68,7 @@ public class RepositoryService {
         return existe;
     }
 
-    public Optional<TaskDTO> alterarCompleted(Long id){
+    public Optional<TaskDTO> alterarCompleted(Long id) {
         return taskRepository.findById(id).map(t -> {
             t.setCompleted(!t.isCompleted());
             taskRepository.save(t);
