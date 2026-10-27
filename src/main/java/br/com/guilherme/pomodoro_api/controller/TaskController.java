@@ -1,6 +1,6 @@
 package br.com.guilherme.pomodoro_api.controller;
 
-import br.com.guilherme.pomodoro_api.dto.TaskDTO;
+import br.com.guilherme.pomodoro_api.dto.TaskResponseDTO;
 import br.com.guilherme.pomodoro_api.entity.Task;
 import br.com.guilherme.pomodoro_api.service.RepositoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,8 @@ public class TaskController {
     private RepositoryService repositoryService;
 
     @GetMapping()
-    public ResponseEntity<List<TaskDTO>> mostrarTasks(@RequestParam(required = false) Boolean completed) {
-        List<TaskDTO> allTasks = repositoryService.findAllTasks();
+    public ResponseEntity<List<TaskResponseDTO>> mostrarTasks(@RequestParam(required = false) Boolean completed) {
+        List<TaskResponseDTO> allTasks = repositoryService.findAllTasks();
         if (completed == null) {
             return ResponseEntity.ok(allTasks);
         }
@@ -28,8 +28,8 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskDTO> mostrarTaskId(@PathVariable Long id) {
-        TaskDTO taskDTO = repositoryService.findTaskById(id);
+    public ResponseEntity<TaskResponseDTO> mostrarTaskId(@PathVariable Long id) {
+        TaskResponseDTO taskDTO = repositoryService.findTaskById(id);
         if (taskDTO == null) {
             return ResponseEntity.notFound().build();
         }
@@ -43,12 +43,12 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id, @RequestBody Task update) {
+    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long id, @RequestBody Task update) {
         return ResponseEntity.of(repositoryService.updateTask(id, update));
     }
 
     @PatchMapping("/{id}/toggle")
-    public ResponseEntity<TaskDTO> patchCompleted(@PathVariable Long id) {
+    public ResponseEntity<TaskResponseDTO> patchCompleted(@PathVariable Long id) {
         return ResponseEntity.of(repositoryService.alterarCompleted(id));
     }
 

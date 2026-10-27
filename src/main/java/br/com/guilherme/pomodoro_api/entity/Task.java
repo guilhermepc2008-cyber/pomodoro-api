@@ -15,6 +15,7 @@ public class Task {
     private Boolean completed;
 
     public Task() {
+
     }
 
     public Task(String title, Boolean completed) {
@@ -25,7 +26,7 @@ public class Task {
     public Long getId() {
         return id;
     }
-
+    
     public void setId(Long id) {
         this.id = id;
     }

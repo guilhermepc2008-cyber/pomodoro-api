@@ -1,6 +1,6 @@
 package br.com.guilherme.pomodoro_api.service;
 
-import br.com.guilherme.pomodoro_api.dto.TaskDTO;
+import br.com.guilherme.pomodoro_api.dto.TaskResponseDTO;
 import br.com.guilherme.pomodoro_api.entity.Task;
 import br.com.guilherme.pomodoro_api.repository.TaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +16,18 @@ public class RepositoryService {
     @Autowired
     private TaskRepository taskRepository;
 
-    public TaskDTO findTaskById(Long id) {
+    public TaskResponseDTO findTaskById(Long id) {
         Optional<Task> optionalTask = taskRepository.findById(id);
-        return optionalTask.map(task -> new TaskDTO(
+        return optionalTask.map(task -> new TaskResponseDTO(
                 task.getId(),
                 task.getTitle(),
                 task.isCompleted()
         )).orElse(null);
     }
 
-    public List<TaskDTO> findAllTasks() {
+    public List<TaskResponseDTO> findAllTasks() {
         return taskRepository.findAll().stream()
-                .map(task -> new TaskDTO(
+                .map(task -> new TaskResponseDTO(
                         task.getId(),
                         task.getTitle(),
                         task.isCompleted()
@@ -35,10 +35,10 @@ public class RepositoryService {
                 .collect(Collectors.toList());
     }
 
-    public List<TaskDTO> findTasksByCompleted(Boolean completed) {
+    public List<TaskResponseDTO> findTasksByCompleted(Boolean completed) {
         return taskRepository.findAll().stream()
                 .filter(task -> task.isCompleted() == completed)
-                .map(task -> new TaskDTO(
+                .map(task -> new TaskResponseDTO(
                         task.getId(),
                         task.getTitle(),
                         task.isCompleted()
@@ -46,12 +46,12 @@ public class RepositoryService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<TaskDTO> updateTask(Long id, Task task) {
+    public Optional<TaskResponseDTO> updateTask(Long id, Task task) {
         return taskRepository.findById(id).map(t -> {
             t.setTitle(task.getTitle());
             t.setCompleted(task.isCompleted());
             taskRepository.save(t);
-            return new TaskDTO(t.getId(), t.getTitle(), t.isCompleted());
+            return new TaskResponseDTO(t.getId(), t.getTitle(), t.isCompleted());
         });
     }
 
@@ -68,11 +68,11 @@ public class RepositoryService {
         return existe;
     }
 
-    public Optional<TaskDTO> alterarCompleted(Long id) {
+    public Optional<TaskResponseDTO> alterarCompleted(Long id) {
         return taskRepository.findById(id).map(t -> {
             t.setCompleted(!t.isCompleted());
             taskRepository.save(t);
-            return new TaskDTO(t.getId(), t.getTitle(), t.isCompleted());
+            return new TaskResponseDTO(t.getId(), t.getTitle(), t.isCompleted());
         });
     }
 }
