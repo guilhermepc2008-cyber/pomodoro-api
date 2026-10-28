@@ -4,7 +4,6 @@ import br.com.guilherme.pomodoro_api.dto.TaskRequestDTO;
 import br.com.guilherme.pomodoro_api.dto.TaskResponseDTO;
 import br.com.guilherme.pomodoro_api.entity.Task;
 import br.com.guilherme.pomodoro_api.repository.TaskRepository;
-// CORREÇÃO: removido import inutilizado/interno do Hibernate Validator (NotBlankValidator)
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,27 +12,37 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class RepositoryService {
+public class TaskService {
 
     @Autowired
     private TaskRepository taskRepository;
 
-    public TaskResponseDTO findTaskById(Long id) {
-        Optional<Task> optionalTask = taskRepository.findById(id);
-        return optionalTask.map(task -> new TaskResponseDTO(
+    // Converte TaskRequestDTO (entrada) para Task (entidade)
+    public Task toEntity(TaskRequestDTO dto) {
+        Task task = new Task();
+        task.setTitle(dto.title());
+        // Tratamento de null para completed (Boolean -> boolean)
+        task.setCompleted(dto.completed() != null ? dto.completed() : false);
+        return task;
+    }
+
+    // Converte Task (entidade) para TaskResponseDTO (saída)
+    public TaskResponseDTO toDTO(Task task) {
+        return new TaskResponseDTO(
                 task.getId(),
                 task.getTitle(),
                 task.isCompleted()
-        )).orElse(null);
+        );
+    }
+
+    public TaskResponseDTO findTaskById(Long id) {
+        Optional<Task> optionalTask = taskRepository.findById(id);
+        return optionalTask.map(this::toDTO).orElse(null);
     }
 
     public List<TaskResponseDTO> findAllTasks() {
         return taskRepository.findAll().stream()
-                .map(task -> new TaskResponseDTO(
-                        task.getId(),
-                        task.getTitle(),
-                        task.isCompleted()
-                ))
+                .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -41,30 +50,25 @@ public class RepositoryService {
         // CORREÇÃO: antes carregava todas as tarefas (findAll) e filtrava em memória com Stream.
         // Agora usa o método findByCompleted do TaskRepository, filtrando direto no banco.
         return taskRepository.findByCompleted(completed).stream()
-                .map(task -> new TaskResponseDTO(
-                        task.getId(),
-                        task.getTitle(),
-                        task.isCompleted()
-                ))
+                .map(this::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public Optional<TaskResponseDTO> updateTask(Long id, TaskRequestDTO task) {
-            return taskRepository.findById(id).map(t -> {
-            t.setTitle(task.title());
+    public Optional<TaskResponseDTO> updateTask(Long id, TaskRequestDTO taskDto) {
+        return taskRepository.findById(id).map(t -> {
             // CORREÇÃO: NullPointerException possível — completed é Boolean (pode ser null)
             // e setCompleted espera boolean primitivo. Tratamos o null com valor default false.
-            t.setCompleted(task.completed() != null ? task.completed() : false);
+            t.setTitle(taskDto.title());
+            t.setCompleted(taskDto.completed() != null ? taskDto.completed() : false);
             taskRepository.save(t);
-            return new TaskResponseDTO(t.getId(), t.getTitle(), t.isCompleted());
+            return toDTO(t);
         });
     }
 
     public TaskResponseDTO postTask(TaskRequestDTO novatask) {
-        Task task = new Task(novatask.title(), novatask.completed());
+        Task task = toEntity(novatask);
         taskRepository.save(task);
-        return new TaskResponseDTO(task.getId(), task.getTitle(), task.isCompleted());
-
+        return toDTO(task);
     }
 
     public void deletarTask(Long id) {
@@ -80,7 +84,7 @@ public class RepositoryService {
         return taskRepository.findById(id).map(t -> {
             t.setCompleted(!t.isCompleted());
             taskRepository.save(t);
-            return new TaskResponseDTO(t.getId(), t.getTitle(), t.isCompleted());
+            return toDTO(t);
         });
     }
 }
