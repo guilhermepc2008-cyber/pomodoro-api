@@ -45,7 +45,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long id, @RequestBody Task update) {
+    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long id, @RequestBody TaskRequestDTO update) {
         return ResponseEntity.of(repositoryService.updateTask(id, update));
     }
 

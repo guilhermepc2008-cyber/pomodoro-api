@@ -50,10 +50,10 @@ public class RepositoryService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<TaskResponseDTO> updateTask(Long id, Task task) {
-        return taskRepository.findById(id).map(t -> {
-            t.setTitle(task.getTitle());
-            t.setCompleted(task.isCompleted());
+    public Optional<TaskResponseDTO> updateTask(Long id, TaskRequestDTO task) {
+            return taskRepository.findById(id).map(t -> {
+            t.setTitle(task.title());
+            t.setCompleted(task.completed());
             taskRepository.save(t);
             return new TaskResponseDTO(t.getId(), t.getTitle(), t.isCompleted());
         });
