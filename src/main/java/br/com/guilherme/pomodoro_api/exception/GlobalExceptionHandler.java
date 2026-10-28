@@ -23,7 +23,7 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.toList());
 
         ErroValidacaoResponse response = new ErroValidacaoResponse(erros);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.badRequest().body(response);
     }
 
     public record ErroCampo(String campo, String mensagem) {
