@@ -4,7 +4,7 @@ import br.com.guilherme.pomodoro_api.dto.TaskRequestDTO;
 import br.com.guilherme.pomodoro_api.dto.TaskResponseDTO;
 import br.com.guilherme.pomodoro_api.entity.Task;
 import br.com.guilherme.pomodoro_api.repository.TaskRepository;
-import org.hibernate.validator.internal.constraintvalidators.bv.NotBlankValidator;
+// CORREÇÃO: removido import inutilizado/interno do Hibernate Validator (NotBlankValidator)
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +17,6 @@ public class RepositoryService {
 
     @Autowired
     private TaskRepository taskRepository;
-    @Autowired
-    private NotBlankValidator notBlankValidator;
 
     public TaskResponseDTO findTaskById(Long id) {
         Optional<Task> optionalTask = taskRepository.findById(id);
@@ -40,6 +38,8 @@ public class RepositoryService {
     }
 
     public List<TaskResponseDTO> findTasksByCompleted(Boolean completed) {
+        // CORREÇÃO: antes carregava todas as tarefas (findAll) e filtrava em memória com Stream.
+        // Agora usa o método findByCompleted do TaskRepository, filtrando direto no banco.
         return taskRepository.findByCompleted(completed).stream()
                 .map(task -> new TaskResponseDTO(
                         task.getId(),
@@ -52,7 +52,9 @@ public class RepositoryService {
     public Optional<TaskResponseDTO> updateTask(Long id, TaskRequestDTO task) {
             return taskRepository.findById(id).map(t -> {
             t.setTitle(task.title());
-            t.setCompleted(task.completed());
+            // CORREÇÃO: NullPointerException possível — completed é Boolean (pode ser null)
+            // e setCompleted espera boolean primitivo. Tratamos o null com valor default false.
+            t.setCompleted(task.completed() != null ? task.completed() : false);
             taskRepository.save(t);
             return new TaskResponseDTO(t.getId(), t.getTitle(), t.isCompleted());
         });
