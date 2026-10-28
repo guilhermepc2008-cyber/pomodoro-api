@@ -40,8 +40,8 @@ public class TaskController {
 
     @PostMapping
     public ResponseEntity<TaskResponseDTO> createTask(@Valid @RequestBody TaskRequestDTO task) {
-        repositoryService.postTask(task);
-        return ResponseEntity.status(HttpStatus.CREATED).body(task);
+        TaskResponseDTO novatask = repositoryService.postTask(task);
+        return ResponseEntity.status(HttpStatus.CREATED).body(novatask);
     }
 
     @PutMapping("/{id}")
