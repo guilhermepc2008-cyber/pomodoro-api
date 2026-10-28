@@ -5,14 +5,17 @@ import br.com.guilherme.pomodoro_api.dto.TaskResponseDTO;
 import br.com.guilherme.pomodoro_api.entity.Task;
 import br.com.guilherme.pomodoro_api.service.TaskService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 // CORREÇÃO: removidos imports não utilizados (ArrayList e AtomicLong)
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/task")
 public class TaskController {
@@ -29,7 +32,7 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskResponseDTO> mostrarTaskId(@PathVariable Long id) {
+    public ResponseEntity<TaskResponseDTO> mostrarTaskId(@Positive @PathVariable Long id) {
         TaskResponseDTO taskDTO = taskService.findTaskById(id);
         if (taskDTO == null) {
             return ResponseEntity.notFound().build();
@@ -44,17 +47,17 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable Long id, @Valid @RequestBody TaskRequestDTO update) {
+    public ResponseEntity<TaskResponseDTO> updateTask(@Positive @PathVariable Long id, @Valid @RequestBody TaskRequestDTO update) {
         return ResponseEntity.of(taskService.updateTask(id, update));
     }
 
     @PatchMapping("/{id}/toggle")
-    public ResponseEntity<TaskResponseDTO> patchCompleted(@PathVariable Long id) {
+    public ResponseEntity<TaskResponseDTO> patchCompleted(@Positive @PathVariable Long id) {
         return ResponseEntity.of(taskService.alterarCompleted(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteTask(@Positive @PathVariable Long id) {
         if (taskService.existeTask(id)) {
             taskService.deletarTask(id);
             return ResponseEntity.noContent().build();
