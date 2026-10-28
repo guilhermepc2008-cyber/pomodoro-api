@@ -40,8 +40,7 @@ public class RepositoryService {
     }
 
     public List<TaskResponseDTO> findTasksByCompleted(Boolean completed) {
-        return taskRepository.findAll().stream()
-                .filter(task -> task.isCompleted() == completed)
+        return taskRepository.findByCompleted(completed).stream()
                 .map(task -> new TaskResponseDTO(
                         task.getId(),
                         task.getTitle(),
