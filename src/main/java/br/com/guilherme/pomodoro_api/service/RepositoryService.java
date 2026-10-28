@@ -1,8 +1,10 @@
 package br.com.guilherme.pomodoro_api.service;
 
+import br.com.guilherme.pomodoro_api.dto.TaskRequestDTO;
 import br.com.guilherme.pomodoro_api.dto.TaskResponseDTO;
 import br.com.guilherme.pomodoro_api.entity.Task;
 import br.com.guilherme.pomodoro_api.repository.TaskRepository;
+import org.hibernate.validator.internal.constraintvalidators.bv.NotBlankValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ public class RepositoryService {
 
     @Autowired
     private TaskRepository taskRepository;
+    @Autowired
+    private NotBlankValidator notBlankValidator;
 
     public TaskResponseDTO findTaskById(Long id) {
         Optional<Task> optionalTask = taskRepository.findById(id);
@@ -55,8 +59,11 @@ public class RepositoryService {
         });
     }
 
-    public void postTask(Task task) {
+    public TaskResponseDTO postTask(TaskRequestDTO novatask) {
+        Task task = new Task(novatask.title(), novatask.completed());
         taskRepository.save(task);
+        return new TaskResponseDTO(task.getId(), task.getTitle(), task.isCompleted());
+
     }
 
     public void deletarTask(Long id) {

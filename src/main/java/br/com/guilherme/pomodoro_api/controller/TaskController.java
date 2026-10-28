@@ -1,8 +1,10 @@
 package br.com.guilherme.pomodoro_api.controller;
 
+import br.com.guilherme.pomodoro_api.dto.TaskRequestDTO;
 import br.com.guilherme.pomodoro_api.dto.TaskResponseDTO;
 import br.com.guilherme.pomodoro_api.entity.Task;
 import br.com.guilherme.pomodoro_api.service.RepositoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,7 +39,7 @@ public class TaskController {
     }
 
     @PostMapping
-    public ResponseEntity<Task> createTask(@RequestBody Task task) {
+    public ResponseEntity<TaskResponseDTO> createTask(@Valid @RequestBody TaskRequestDTO task) {
         repositoryService.postTask(task);
         return ResponseEntity.status(HttpStatus.CREATED).body(task);
     }
